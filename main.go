@@ -59,5 +59,19 @@ func main() {
 		log.Fatalf("DB Error: %s\n", err)
 	}
 
-	log.Printf("Tokyoの人口は%d人です\n", city.Population)
+	log.Printf("%sの人口は%d人です\n", city.Name, city.Population)
+
+	var population int
+	err = db.Get(&population, "SELECT Population FROM country WHERE Code = ?", city.CountryCode)
+	if errors.Is(err, sql.ErrNoRows) {
+		log.Printf("no such country Code = '%s'\n", city.CountryCode)
+		return
+	}
+	if err != nil {
+		log.Fatalf("DB Error: %s\n", err)
+	}
+
+	percent := (float64(city.Population) / float64(population)) * 100
+
+	log.Printf("これは%sの人口の%f%%です\n", city.CountryCode, percent)
 }
