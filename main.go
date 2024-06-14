@@ -46,17 +46,18 @@ func main() {
 	}
 
 	log.Println("connected")
-	// #region get
-	// err = の行はSQLの文と一緒
+
+	cityName := os.Args[1]
+
 	var city City
-	err = db.Get(&city, "SELECT * FROM city WHERE Name = ?", "Tokyo")
+	err = db.Get(&city, "SELECT * FROM city WHERE Name = ?", cityName)
 	if errors.Is(err, sql.ErrNoRows) {
-		log.Printf("no such city Name = '%s'\n", "Tokyo")
+		log.Printf("no such city Name = '%s'\n", cityName)
 		return
 	}
 	if err != nil {
 		log.Fatalf("DB Error: %s\n", err)
 	}
-	// #endregion get
+
 	log.Printf("Tokyoの人口は%d人です\n", city.Population)
 }
